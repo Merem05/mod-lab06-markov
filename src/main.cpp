@@ -1,36 +1,32 @@
-﻿#include "textgen.h"
+#include "textgen.h"
 
-int main()
-{
-    setlocale(LC_ALL, "Russian");
-
-    cout << "Размер префикса: " << NPREF << " слова\n";
-    cout << "Макс объем текста: " << MAXGEN << " слов\n\n";
+int main() {
+    std::cout << "Prefix size: " << NPREF << " words\n";
+    std::cout << "Max text size: " << MAXGEN << " words\n\n";
 
     statetab table;
     prefix startPrefix;
 
     string filename = "input.txt";
+    std::cout << "Loading file: " << filename << "...\n";
 
     buildTable(filename, table, startPrefix);
 
-    if (table.empty())
-    {
-        cerr << "Ошибка при загрузке файла\n";
+    if (table.empty()) {
+        std::cerr << "Error: cannot load file\n";
         return 1;
     }
 
-    cout << "Файл успешно загружен\n";
+    std::cout << "File loaded successfully\n";
 
     string generatedText = generate(table, startPrefix, MAXGEN);
 
-    if (generatedText.empty())
-    {
-        cerr << "Ошибка при генерации текста.\n";
+    if (generatedText.empty()) {
+        std::cerr << "Error: cannot generate text\n";
         return 1;
     }
 
-    cout << "\n" << generatedText << "\n";
+    std::cout << "\n" << generatedText << "\n";
 
     saveToFile("gen.txt", generatedText);
 
