@@ -1,3 +1,10 @@
+// Copyright 2024
+
+#include <vector>
+#include <string>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "textgen.h"
 
 unsigned int currentSeed = 0;
@@ -7,15 +14,15 @@ void setSeed(unsigned int seed) {
     srand(seed);
 }
 
-void buildTable(const string& filename, statetab& table, prefix& startPrefix) {
+void buildTable(const std::string& filename, statetab& table, prefix& startPrefix) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error: cannot open file " << filename << std::endl;
         return;
     }
 
-    std::vector<string> words;
-    string word;
+    std::vector<std::string> words;
+    std::string word;
     while (file >> word) {
         words.push_back(word);
     }
@@ -36,12 +43,12 @@ void buildTable(const string& filename, statetab& table, prefix& startPrefix) {
         for (int j = 0; j < NPREF; ++j) {
             current.push_back(words[i + j]);
         }
-        string suffix = words[i + NPREF];
+        std::string suffix = words[i + NPREF];
         table[current].push_back(suffix);
     }
 }
 
-string generate(const statetab& table, const prefix& startPrefix, int maxGen) {
+std::string generate(const statetab& table, const prefix& startPrefix, int maxGen) {
     if (table.empty()) {
         std::cerr << "Error: table is empty" << std::endl;
         return "";
@@ -53,10 +60,10 @@ string generate(const statetab& table, const prefix& startPrefix, int maxGen) {
         srand(currentSeed);
     }
 
-    string W1 = startPrefix[0];
-    string W2 = startPrefix[1];
+    std::string W1 = startPrefix[0];
+    std::string W2 = startPrefix[1];
 
-    string result = W1 + " " + W2;
+    std::string result = W1 + " " + W2;
 
     for (int step = 0; step < maxGen; ++step) {
         prefix key;
@@ -68,9 +75,9 @@ string generate(const statetab& table, const prefix& startPrefix, int maxGen) {
             break;
         }
 
-        const std::vector<string>& suffixes = it->second;
+        const std::vector<std::string>& suffixes = it->second;
         int randomIndex = rand() % suffixes.size();
-        string W3 = suffixes[randomIndex];
+        std::string W3 = suffixes[randomIndex];
 
         result += " " + W3;
 
@@ -81,11 +88,11 @@ string generate(const statetab& table, const prefix& startPrefix, int maxGen) {
     return result;
 }
 
-void saveToFile(const string& filename, const string& text) {
-    string dir = "result";
+void saveToFile(const std::string& filename, const std::string& text) {
+    std::string dir = "result";
     system(("mkdir " + dir + " 2>nul").c_str());
 
-    string fullPath = dir + "/" + filename;
+    std::string fullPath = dir + "/" + filename;
     std::ofstream file(fullPath);
     if (file.is_open()) {
         file << text;
