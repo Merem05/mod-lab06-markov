@@ -1,8 +1,8 @@
 // Copyright 2024
 
-#include <string>
-#include <fstream>
 #include <gtest/gtest.h>
+#include <fstream>
+#include <string>
 #include "textgen.h"
 
 TEST(PrefixTest, ThreeWords) {
