@@ -1,3 +1,7 @@
+// Copyright 2024
+
+#include <string>
+#include <fstream>
 #include <gtest/gtest.h>
 #include "textgen.h"
 
@@ -79,10 +83,10 @@ TEST(GenerateTest, ManualTable) {
     tab[k2].push_back("4");
 
     setSeed(42);
-    string res = generate(tab, start, 2);
+    std::string res = generate(tab, start, 2);
 
-    EXPECT_NE(res.find("1"), string::npos);
-    EXPECT_NE(res.find("2"), string::npos);
+    EXPECT_NE(res.find("1"), std::string::npos);
+    EXPECT_NE(res.find("2"), std::string::npos);
 }
 
 TEST(GenerateTest, ZeroLength) {
@@ -98,7 +102,7 @@ TEST(GenerateTest, ZeroLength) {
     tab[k].push_back("c");
 
     setSeed(1);
-    string res = generate(tab, start, 0);
+    std::string res = generate(tab, start, 0);
 
     int words = 1;
     for (char c : res) {
@@ -112,7 +116,7 @@ TEST(GenerateTest, EmptyTable) {
     statetab empty;
     prefix start;
 
-    string res = generate(empty, start, 10);
+    std::string res = generate(empty, start, 10);
 
     EXPECT_TRUE(res.empty());
 }
@@ -136,10 +140,10 @@ TEST(GenerateTest, RandomSuffixSelection) {
 
     for (int i = 1; i <= 20; ++i) {
         setSeed(i);
-        string res = generate(tab, start, 1);
-        if (res.find("3") != string::npos) saw3 = true;
-        if (res.find("4") != string::npos) saw4 = true;
-        if (res.find("5") != string::npos) saw5 = true;
+        std::string res = generate(tab, start, 1);
+        if (res.find("3") != std::string::npos) saw3 = true;
+        if (res.find("4") != std::string::npos) saw4 = true;
+        if (res.find("5") != std::string::npos) saw5 = true;
         if (saw3 && saw4 && saw5) break;
     }
 
@@ -160,9 +164,9 @@ TEST(GenerateTest, SameSeedSameResult) {
     tab[k].push_back("sun");
 
     setSeed(555);
-    string r1 = generate(tab, start, 1);
+    std::string r1 = generate(tab, start, 1);
     setSeed(555);
-    string r2 = generate(tab, start, 1);
+    std::string r2 = generate(tab, start, 1);
 
     EXPECT_EQ(r1, r2);
 }
@@ -184,10 +188,10 @@ TEST(GenerateTest, WordSequence) {
     tab[k2].push_back("playground");
 
     setSeed(1);
-    string res = generate(tab, start, 2);
+    std::string res = generate(tab, start, 2);
 
-    EXPECT_NE(res.find("I"), string::npos);
-    EXPECT_NE(res.find("play"), string::npos);
+    EXPECT_NE(res.find("I"), std::string::npos);
+    EXPECT_NE(res.find("play"), std::string::npos);
 }
 
 TEST(ConstantsTest, NPREFValue) {
@@ -210,7 +214,7 @@ TEST(GenerateTest, StopWhenNoSuffix) {
     tab[k].push_back("me");
 
     setSeed(1);
-    string res = generate(tab, start, 100);
+    std::string res = generate(tab, start, 100);
 
     int words = 1;
     for (char c : res) {
@@ -239,9 +243,4 @@ TEST(BuildTableTest, FromFile) {
     EXPECT_EQ(tab[k][0], "3");
 
     remove("temp.txt");
-}
-
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }
