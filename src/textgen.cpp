@@ -67,6 +67,8 @@ std::string generate(const statetab& table, const prefix& startPrefix,
 
     std::string result = W1 + " " + W2;
 
+    static unsigned int threadSeed = time(NULL);
+
     for (int step = 0; step < maxGen; ++step) {
         prefix key;
         key.push_back(W1);
@@ -78,8 +80,7 @@ std::string generate(const statetab& table, const prefix& startPrefix,
         }
 
         const std::vector<std::string>& suffixes = it->second;
-        unsigned int seed = rand();
-        int randomIndex = rand_r(&seed) % suffixes.size();  // NOLINT
+        int randomIndex = rand_r(&threadSeed) % suffixes.size();
         std::string W3 = suffixes[randomIndex];
 
         result += " " + W3;
@@ -93,7 +94,8 @@ std::string generate(const statetab& table, const prefix& startPrefix,
 
 void saveToFile(const std::string& filename, const std::string& text) {
     std::string dir = "result";
-    system(("mkdir " + dir + " 2>nul").c_str());
+    int result = system(("mkdir " + dir + " 2>nul").c_str());
+    (void)result;
 
     std::string fullPath = dir + "/" + filename;
     std::ofstream file(fullPath);
