@@ -14,7 +14,8 @@ void setSeed(unsigned int seed) {
     srand(seed);
 }
 
-void buildTable(const std::string& filename, statetab& table, prefix& startPrefix) {
+void buildTable(const std::string& filename, statetab& table,
+                prefix& startPrefix) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error: cannot open file " << filename << std::endl;
@@ -48,7 +49,8 @@ void buildTable(const std::string& filename, statetab& table, prefix& startPrefi
     }
 }
 
-std::string generate(const statetab& table, const prefix& startPrefix, int maxGen) {
+std::string generate(const statetab& table, const prefix& startPrefix,
+                     int maxGen) {
     if (table.empty()) {
         std::cerr << "Error: table is empty" << std::endl;
         return "";
@@ -76,7 +78,8 @@ std::string generate(const statetab& table, const prefix& startPrefix, int maxGe
         }
 
         const std::vector<std::string>& suffixes = it->second;
-        int randomIndex = rand() % suffixes.size();
+        unsigned int seed = rand();
+        int randomIndex = rand_r(&seed) % suffixes.size();
         std::string W3 = suffixes[randomIndex];
 
         result += " " + W3;
