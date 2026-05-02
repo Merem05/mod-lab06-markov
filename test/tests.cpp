@@ -1,75 +1,67 @@
 #include <gtest/gtest.h>
 #include "textgen.h"
 
-using namespace std;
-
-TEST(PrefixTest, ThreeWords)
-{
+TEST(PrefixTest, ThreeWords) {
     prefix p;
-    p.push_back("город");
-    p.push_back("деревня");
-    p.push_back("страна");
+    p.push_back("city");
+    p.push_back("village");
+    p.push_back("country");
 
     EXPECT_EQ(p.size(), 3);
-    EXPECT_EQ(p[0], "город");
-    EXPECT_EQ(p[1], "деревня");
-    EXPECT_EQ(p[2], "страна");
+    EXPECT_EQ(p[0], "city");
+    EXPECT_EQ(p[1], "village");
+    EXPECT_EQ(p[2], "country");
 }
 
-TEST(PrefixTest, TwoWords)
-{
+TEST(PrefixTest, TwoWords) {
     prefix p;
-    p.push_back("белый");
-    p.push_back("красный");
+    p.push_back("white");
+    p.push_back("red");
 
     EXPECT_EQ(p.size(), 2);
-    EXPECT_EQ(p[0], "белый");
-    EXPECT_EQ(p[1], "красный");
+    EXPECT_EQ(p[0], "white");
+    EXPECT_EQ(p[1], "red");
 }
 
-TEST(StateTabTest, PrefixSuffixRecord)
-{
+TEST(StateTabTest, PrefixSuffixRecord) {
     statetab tab;
     prefix key;
-    key.push_back("мама");
-    key.push_back("готовила");
+    key.push_back("mother");
+    key.push_back("cooked");
 
-    tab[key].push_back("плов");
-    tab[key].push_back("суп");
+    tab[key].push_back("soup");
+    tab[key].push_back("dinner");
 
     EXPECT_EQ(tab[key].size(), 2);
-    EXPECT_EQ(tab[key][0], "плов");
-    EXPECT_EQ(tab[key][1], "суп");
+    EXPECT_EQ(tab[key][0], "soup");
+    EXPECT_EQ(tab[key][1], "dinner");
 }
 
-TEST(StateTabTest, SingleSuffix)
-{
+TEST(StateTabTest, SingleSuffix) {
     statetab tab;
     prefix key;
-    key.push_back("синий");
-    key.push_back("зеленый");
-    tab[key].push_back("розовый");
+    key.push_back("blue");
+    key.push_back("green");
+    tab[key].push_back("pink");
 
     EXPECT_EQ(tab[key].size(), 1);
-    EXPECT_EQ(tab[key][0], "розовый");
+    EXPECT_EQ(tab[key][0], "pink");
 }
 
-TEST(StateTabTest, MultipleSuffixes)
-{
+TEST(StateTabTest, MultipleSuffixes) {
     statetab tab;
     prefix key;
-    key.push_back("хлеб");
-    key.push_back("масло");
+    key.push_back("bread");
+    key.push_back("butter");
 
-    tab[key].push_back("сыр");
-    tab[key].push_back("молоко");
-    tab[key].push_back("сметана");
+    tab[key].push_back("cheese");
+    tab[key].push_back("milk");
+    tab[key].push_back("sour cream");
 
     EXPECT_EQ(tab[key].size(), 3);
 }
 
-TEST(GenerateTest, ManualTable)
-{
+TEST(GenerateTest, ManualTable) {
     statetab tab;
     prefix start;
 
@@ -93,40 +85,39 @@ TEST(GenerateTest, ManualTable)
     EXPECT_NE(res.find("2"), string::npos);
 }
 
-TEST(GenerateTest, ZeroLength)
-{
+TEST(GenerateTest, ZeroLength) {
     statetab tab;
     prefix start;
 
-    start.push_back("а");
-    start.push_back("б");
+    start.push_back("a");
+    start.push_back("b");
 
     prefix k;
-    k.push_back("а");
-    k.push_back("б");
-    tab[k].push_back("в");
+    k.push_back("a");
+    k.push_back("b");
+    tab[k].push_back("c");
 
     setSeed(1);
     string res = generate(tab, start, 0);
 
     int words = 1;
-    for (char c : res) if (c == ' ') words++;
+    for (char c : res) {
+        if (c == ' ') ++words;
+    }
 
     EXPECT_EQ(words, 2);
 }
 
-TEST(GenerateTest, EmptyTable)
-{
-    statetab pusto;
+TEST(GenerateTest, EmptyTable) {
+    statetab empty;
     prefix start;
 
-    string res = generate(pusto, start, 10);
+    string res = generate(empty, start, 10);
 
     EXPECT_TRUE(res.empty());
 }
 
-TEST(GenerateTest, RandomSuffixSelection)
-{
+TEST(GenerateTest, RandomSuffixSelection) {
     statetab tab;
     prefix start;
     start.push_back("1");
@@ -143,8 +134,7 @@ TEST(GenerateTest, RandomSuffixSelection)
     bool saw4 = false;
     bool saw5 = false;
 
-    for (int i = 1; i <= 20; i++)
-    {
+    for (int i = 1; i <= 20; ++i) {
         setSeed(i);
         string res = generate(tab, start, 1);
         if (res.find("3") != string::npos) saw3 = true;
@@ -158,17 +148,16 @@ TEST(GenerateTest, RandomSuffixSelection)
     EXPECT_TRUE(saw5);
 }
 
-TEST(GenerateTest, SameSeedSameResult)
-{
+TEST(GenerateTest, SameSeedSameResult) {
     statetab tab;
     prefix start;
-    start.push_back("доброе");
-    start.push_back("утро");
+    start.push_back("good");
+    start.push_back("morning");
 
     prefix k;
-    k.push_back("доброе");
-    k.push_back("утро");
-    tab[k].push_back("солнце");
+    k.push_back("good");
+    k.push_back("morning");
+    tab[k].push_back("sun");
 
     setSeed(555);
     string r1 = generate(tab, start, 1);
@@ -178,64 +167,61 @@ TEST(GenerateTest, SameSeedSameResult)
     EXPECT_EQ(r1, r2);
 }
 
-TEST(GenerateTest, WordSequence)
-{
+TEST(GenerateTest, WordSequence) {
     statetab tab;
     prefix start;
-    start.push_back("я");
-    start.push_back("играю");
+    start.push_back("I");
+    start.push_back("play");
 
     prefix k1;
-    k1.push_back("я");
-    k1.push_back("играю");
-    tab[k1].push_back("на");
+    k1.push_back("I");
+    k1.push_back("play");
+    tab[k1].push_back("on");
 
     prefix k2;
-    k2.push_back("играю");
-    k2.push_back("на");
-    tab[k2].push_back("площадке");
+    k2.push_back("play");
+    k2.push_back("on");
+    tab[k2].push_back("playground");
 
     setSeed(1);
     string res = generate(tab, start, 2);
 
-    EXPECT_NE(res.find("я"), string::npos);
-    EXPECT_NE(res.find("играю"), string::npos);
+    EXPECT_NE(res.find("I"), string::npos);
+    EXPECT_NE(res.find("play"), string::npos);
 }
 
-TEST(ConstantsTest, NPREFValue)
-{
+TEST(ConstantsTest, NPREFValue) {
     EXPECT_EQ(NPREF, 2);
 }
 
-TEST(ConstantsTest, MAXGENValue)
-{
+TEST(ConstantsTest, MAXGENValue) {
     EXPECT_EQ(MAXGEN, 1000);
 }
 
-TEST(GenerateTest, StopWhenNoSuffix)
-{
+TEST(GenerateTest, StopWhenNoSuffix) {
     statetab tab;
     prefix start;
-    start.push_back("папа");
-    start.push_back("мама");
+    start.push_back("dad");
+    start.push_back("mom");
 
     prefix k;
-    k.push_back("папа");
-    k.push_back("мама");
-    tab[k].push_back("я");
+    k.push_back("dad");
+    k.push_back("mom");
+    tab[k].push_back("me");
 
     setSeed(1);
     string res = generate(tab, start, 100);
 
     int words = 1;
-    for (char c : res) if (c == ' ') words++;
+    for (char c : res) {
+        if (c == ' ') ++words;
+    }
 
     EXPECT_EQ(words, 3);
 }
 
-TEST(BuildTableTest, FromFile)
-{
-    ofstream file("temp.txt");
+TEST(BuildTableTest, FromFile) {
+    std::ofstream file("temp.txt");
     file << "1 2 3 4";
     file.close();
 
@@ -253,4 +239,9 @@ TEST(BuildTableTest, FromFile)
     EXPECT_EQ(tab[k][0], "3");
 
     remove("temp.txt");
+}
+
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
