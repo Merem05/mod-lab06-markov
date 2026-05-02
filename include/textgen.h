@@ -1,5 +1,5 @@
-#ifndef TEXTGEN_H
-#define TEXTGEN_H
+#ifndef INCLUDE_TEXTGEN_H_
+#define INCLUDE_TEXTGEN_H_
 
 #include <iostream>
 #include <fstream>
@@ -10,7 +10,13 @@
 #include <cstdlib>
 #include <ctime>
 
-using namespace std;
+using std::deque;
+using std::map;
+using std::vector;
+using std::string;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 typedef deque<string> prefix;
 typedef map<prefix, vector<string>> statetab;
