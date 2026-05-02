@@ -1,3 +1,5 @@
+// Copyright 2024
+
 #ifndef INCLUDE_TEXTGEN_H_
 #define INCLUDE_TEXTGEN_H_
 
@@ -29,4 +31,4 @@ string generate(const statetab& table, const prefix& startPrefix, int maxGen);
 void saveToFile(const string& filename, const string& text);
 void setSeed(unsigned int seed);
 
-#endif
+#endif  // INCLUDE_TEXTGEN_H_
