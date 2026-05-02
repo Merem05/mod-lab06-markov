@@ -79,7 +79,7 @@ std::string generate(const statetab& table, const prefix& startPrefix,
 
         const std::vector<std::string>& suffixes = it->second;
         unsigned int seed = rand();
-        int randomIndex = rand_r(&seed) % suffixes.size();
+        int randomIndex = rand_r(&seed) % suffixes.size();  // NOLINT
         std::string W3 = suffixes[randomIndex];
 
         result += " " + W3;
